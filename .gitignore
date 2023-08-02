@@ -52,6 +52,4 @@ ENV/
 *.traj
 custom/*_data/
 runs/
-*.svg
-*.png
 
