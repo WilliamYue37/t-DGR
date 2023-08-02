@@ -1,7 +1,8 @@
 # t-DGR
-Trajectory-based Deep Generative Replay
+A trajectory-based Deep Generative Replay method for lifelong learning in decision making tasks.
 
 ![Figure 1](images/Figure_1.svg)
+![Figure 2](images/DGR.svg)
 
 # Contents
 
