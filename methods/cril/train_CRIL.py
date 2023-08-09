@@ -13,19 +13,19 @@ from diffusion import GaussianDiffusion, Trainer as DiffusionTrainer
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--batch_size', type=int, default=32)
-parser.add_argument('--epochs', type=int, default=300)
-parser.add_argument('--steps', type=int, default=10000)
-parser.add_argument('--timesteps', type=int, default=1000)
-parser.add_argument("--lr", type=float, default=0.0001)
-parser.add_argument("--learner_ckpt", type=str, default=None)
-parser.add_argument("--gen_ckpt", type=str, default=None)
-parser.add_argument("--ratio", type=float, default=0.85) # must be in the range [0, 1)
-parser.add_argument("--ckpt_folder", type=str, default=None)
-parser.add_argument('--warmup', type=int, default=50000)
-parser.add_argument('--dataset', type=str, default='/scratch/cluster/william/metaworld/state_data')
-parser.add_argument('--benchmark', type=str, choices=['cw20', 'gcl', 'cw10'], default='cw20')
-parser.add_argument('--seed', type=int, default=0)
+parser.add_argument('--batch_size', type=int, default=32, help='batch size for training')
+parser.add_argument('--epochs', type=int, default=300, help='number of epochs for training the learner per task')
+parser.add_argument('--steps', type=int, default=10000, help='number of training steps for diffusion per task')
+parser.add_argument('--timesteps', type=int, default=1000, help='number of timesteps in the diffusion process')
+parser.add_argument('--lr', type=float, default=0.0001, help='learning rate')
+parser.add_argument('--learner_ckpt', type=str, default=None, help='path to the learner checkpoint (*.pt)')
+parser.add_argument('--gen_ckpt', type=str, default=None, help='path to the generator checkpoint (*.pt)')
+parser.add_argument('--ratio', type=float, default=0.85, help='ratio of generated data to real data (must be between [0, 1))')
+parser.add_argument('--ckpt_folder', type=str, default=None, help='folder to save checkpoints and logs')
+parser.add_argument('--warmup', type=int, default=50000, help='number of training steps to warmup the generator')
+parser.add_argument('--dataset', type=str, required=True, help='path to the dataset')
+parser.add_argument('--benchmark', type=str, choices=['cw20', 'gcl', 'cw10'], default='cw20', help='benchmark to run')
+parser.add_argument('--seed', type=int, default=0, help='random seed')
 args = parser.parse_args()
 
 torch.manual_seed(args.seed)
@@ -36,7 +36,7 @@ if not os.path.exists('runs'):
 
 # create ckpts folder
 if args.ckpt_folder is None:
-    args.ckpt_folder = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + f'-{socket.gethostname()}'
+    args.ckpt_folder = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + f'-{socket.gethostname()}'
 args.ckpt_folder = 'runs/' + args.ckpt_folder
 
 # set benchmark specific settings
