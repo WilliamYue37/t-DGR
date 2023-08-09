@@ -11,14 +11,13 @@ from tests.metaworld.envs.mujoco.sawyer_xyz.test_scripted_policies import ALL_EN
 env_names = ['hammer-v2', 'push-wall-v2', 'faucet-close-v2', 'push-back-v2', 'stick-pull-v2', 'handle-press-side-v2', 'push-v2', 'shelf-place-v2', 'window-close-v2', 'peg-unplug-side-v2']
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--models', type=str, default=None)
-parser.add_argument('--runs', type=int, default=10)
-parser.add_argument('--verbose', action='store_true')
-parser.add_argument('--benchmark', type=str, choices=['cw20', 'gcl'], default='cw20')
+parser.add_argument('--models', type=str, default=None, help='path to the directory containing the learner checkpoints')
+parser.add_argument('--runs', type=int, default=10, help='number of runs to average over')
+parser.add_argument('--benchmark', type=str, choices=['cw20', 'gcl', 'cw10'], default='cw20', help='benchmark to evaluate on')
 args = parser.parse_args()
 
 # set benchmark specific settings
-if args.benchmark == 'cw20':
+if 'cw' in args.benchmark:
     model_names = ['hammer-v2', 'push-wall-v2', 'faucet-close-v2', 'push-back-v2', 'stick-pull-v2', 'handle-press-side-v2', 'push-v2', 'shelf-place-v2', 'window-close-v2', 'peg-unplug-side-v2']
 else:
     model_names = ['bucket0', 'bucket1', 'bucket2', 'bucket3', 'bucket4', 'bucket5', 'bucket6', 'bucket7', 'bucket8', 'bucket9']

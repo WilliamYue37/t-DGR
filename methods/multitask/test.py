@@ -9,9 +9,8 @@ from tests.metaworld.envs.mujoco.sawyer_xyz.test_scripted_policies import ALL_EN
 env_names = ['hammer-v2', 'push-wall-v2', 'faucet-close-v2', 'push-back-v2', 'stick-pull-v2', 'handle-press-side-v2', 'push-v2', 'shelf-place-v2', 'window-close-v2', 'peg-unplug-side-v2']
 
 argparser = argparse.ArgumentParser()
-argparser.add_argument('--models', type=str, default=None)
-argparser.add_argument('--runs', type=int, default=10)
-argparser.add_argument('--verbose', action='store_true')
+argparser.add_argument('--model', type=str, default=None, help='path to the directory containing the learner checkpoint')
+argparser.add_argument('--runs', type=int, default=10, help='number of runs to average over')
 args = argparser.parse_args()
 
 final_model_path = args.models + '/model-' + env_names[len(env_names) - 1] + '.pt'

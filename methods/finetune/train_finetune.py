@@ -8,14 +8,14 @@ import datetime
 import os
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--batch_size', type=int, default=32)
-parser.add_argument('--epochs', type=int, default=500)
-parser.add_argument("--lr", type=float, default=0.0001)
-parser.add_argument("--ckpt", type=str, default=None)
-parser.add_argument('--ckpt_folder', type=str, default=None)
-parser.add_argument('--dataset', type=str, default='/scratch/cluster/william/metaworld/state_data')
-parser.add_argument('--benchmark', type=str, choices=['cw20', 'gcl'], default='cw20')
-parser.add_argument('--seed', type=int, default=0)
+parser.add_argument('--batch_size', type=int, default=32, help='batch size for training')
+parser.add_argument('--epochs', type=int, default=500, help='number of epochs for training the learner per task')
+parser.add_argument('--lr', type=float, default=0.0001, help='learning rate')
+parser.add_argument('--ckpt', type=str, default=None, help='path to the learner checkpoint (*.pt)')
+parser.add_argument('--ckpt_folder', type=str, default=None, help='folder to save checkpoints and logs')
+parser.add_argument('--dataset', type=str, required=True, help='path to dataset of expert demonstrations')
+parser.add_argument('--benchmark', type=str, choices=['cw20', 'gcl'], default='cw20', help='benchmark to run')
+parser.add_argument('--seed', type=int, default=0, help='random seed')
 args = parser.parse_args()
 
 torch.manual_seed(args.seed)
@@ -26,7 +26,7 @@ if not os.path.exists('runs'):
 
 # create ckpts folder
 if args.ckpt_folder is None:
-    args.ckpt_folder = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + f'-{socket.gethostname()}'
+    args.ckpt_folder = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + f'-{socket.gethostname()}'
 args.ckpt_folder = 'runs/' + args.ckpt_folder
 
 # get dataset
