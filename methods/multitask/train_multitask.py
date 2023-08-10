@@ -40,4 +40,5 @@ if args.ckpt:
     trainer.load(args.ckpt)
 
 trainer.train(args.epochs)
+trainer.save('multitask')
 

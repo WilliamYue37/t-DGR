@@ -106,8 +106,8 @@ def compute_FT():
 
 
 print('Avg Successes per Env:', compute_success())
-if args.benchmark == 'cw20': print('Avg Forgetting per Env:', compute_forgetting())
-if args.benchmark == 'cw20': print('Avg Forward Transfer per Env:', compute_FT())
+if 'cw' in args.benchmark: print('Avg Forgetting per Env:', compute_forgetting())
+if 'cw' in args.benchmark: print('Avg Forward Transfer per Env:', compute_FT())
 
 
 

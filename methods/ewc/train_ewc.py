@@ -16,7 +16,7 @@ parser.add_argument('--ckpt', type=str, default=None, help='path to the learner 
 parser.add_argument('--ckpt_folder', type=str, default=None, help='folder to save checkpoints and logs')
 parser.add_argument('--ewc_lambda', type=float, default=100, help='fisher multiplier for EWC')
 parser.add_argument('--dataset', type=str, required=True, help='path to dataset of expert demonstrations')
-parser.add_argument('--benchmark', type=str, choices=['cw20', 'gcl'], default='cw20', help='benchmark to run')
+parser.add_argument('--benchmark', type=str, choices=['cw20', 'gcl', 'cw10'], default='cw20', help='benchmark to run')
 parser.add_argument('--seed', type=int, default=0, help='random seed')
 args = parser.parse_args()
 
@@ -32,7 +32,7 @@ if args.ckpt_folder is None:
 args.ckpt_folder = 'runs/' + args.ckpt_folder
 
 # set benchmark specific settings
-if args.benchmark == 'cw20':
+if 'cw' in args.benchmark:
     env_names = ['hammer-v2', 'push-wall-v2', 'faucet-close-v2', 'push-back-v2', 'stick-pull-v2', 'handle-press-side-v2', 'push-v2', 'shelf-place-v2', 'window-close-v2', 'peg-unplug-side-v2']
 else:
     env_names = ['bucket0', 'bucket1', 'bucket2', 'bucket3', 'bucket4', 'bucket5', 'bucket6', 'bucket7', 'bucket8', 'bucket9']

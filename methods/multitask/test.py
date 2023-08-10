@@ -13,7 +13,7 @@ argparser.add_argument('--model', type=str, default=None, help='path to the dire
 argparser.add_argument('--runs', type=int, default=10, help='number of runs to average over')
 args = argparser.parse_args()
 
-final_model_path = args.models + '/model-' + env_names[len(env_names) - 1] + '.pt'
+final_model_path = args.model + '/model-multitask.pt'
 final_model = MLP(input=49, output=4).cuda()
 final_model.load_state_dict(torch.load(final_model_path)['model'])
 
@@ -51,44 +51,7 @@ def compute_success():
     
     return total_successes / len(env_names)
 
-def compute_forgetting():
-    total_forgetting = 0
-    for env_name in env_names:
-        model_name = args.models + '/model-' + env_name + '.pt'
-        model = MLP(input=49, output=4).cuda()
-        model.load_state_dict(torch.load(model_name)['model'])
-        success_rate_i = compute_task_success(env_name, model)
-        success_rate_f = compute_task_success(env_name, final_model)
-        total_forgetting += success_rate_i - success_rate_f
-    
-    return total_forgetting / len(env_names)
-
-def compute_FT():
-    '''compute the average forward transfer across all tasks'''
-    total_FT = 0
-    for i in range(len(env_names)):
-        if i == 0:
-            success_rate_prev = 0
-        else:
-            model_name = args.models + '/model-' + env_names[i - 1] + '.pt'
-            model = MLP(input=49, output=4).cuda()
-            model.load_state_dict(torch.load(model_name)['model'])
-            success_rate_prev = compute_task_success(env_names[i], model)
-
-        model_name = args.models + '/model-' + env_names[i] + '.pt'
-        model = MLP(input=49, output=4).cuda()
-        model.load_state_dict(torch.load(model_name)['model'])
-        success_rate_cur = compute_task_success(env_names[i], model)
-
-        AUC = (success_rate_cur + success_rate_prev) / 2
-        total_FT += (AUC - 0.5) / 0.5
-
-    return total_FT / len(env_names)
-
-
 print('Avg Successes per Env:', compute_success())
-print('Avg Forgetting per Env:', compute_forgetting())
-print('Avg Forward Transfer per Env:', compute_FT())
 
 
 
