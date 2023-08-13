@@ -1,0 +1,11 @@
+name: t-dgr
+channels:
+- pytorch
+- nvidia
+- defaults
+dependencies:
+- python=3.10.8
+- pip=22.3.1
+- pytorch=1.13.1
+- torchvision=0.14.1
+- cudatoolkit
