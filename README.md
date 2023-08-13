@@ -41,5 +41,15 @@ python methods/<method_name>/test.py [--options]
 
 To see the full list of options, run `python methods/<method_name>/test.py --help`.
 
+# Datasets
+
+The Continual World and GCL10 datasets used in the paper are located in `datasets/continual_world/` and `datasets/GCL10/`, respectively. The script used to generate expert demonstrations is included in `datasets/collect_data.py`. To collect expert demonstrations, run the following command:
+
+```shell
+python datasets/collect_data.py [--options]
+```
+
+To see the full list of options, run `python datasets/collect_data.py --help`.
+
 # Citation
 If you find **t-DGR** to be useful in your own research, please consider citing our paper:
