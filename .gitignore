@@ -48,8 +48,5 @@ ENV/
 .DS_Store
 
 # Project specific
-*.out
-*.traj
-custom/*_data/
 runs/
 
