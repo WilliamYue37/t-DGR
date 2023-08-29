@@ -53,3 +53,6 @@ To see the full list of options, run `python datasets/collect_data.py --help`.
 
 # Citation
 If you find **t-DGR** to be useful in your own research, please consider citing our paper:
+
+# Acknowledgements
+Our diffusion model is based on Phil Wang's [denoising-diffusion-pytorch](https://github.com/lucidrains/denoising-diffusion-pytorch) repository. Our 1-D U-Net model is based on Michael Janner's [diffuser](https://github.com/jannerm/diffuser) repository.
