@@ -1,7 +1,8 @@
 # t-DGR
-A trajectory-based Deep Generative Replay method for lifelong learning in decision making tasks.
+**t-DGR: A Trajectory-Based Deep Generative Replay Method for Continual Learning in Decision Making**
+- [Read the Paper](https://arxiv.org/abs/2401.02576)
 
-![Figure 1](images/Figure_1.svg)
+![Figure 1](images/Fig1.svg)
 ![Figure 2](images/DGR.svg)
 
 # Installtion
@@ -53,6 +54,17 @@ To see the full list of options, run `python datasets/collect_data.py --help`.
 
 # Citation
 If you find **t-DGR** to be useful in your own research, please consider citing our paper:
+
+```
+@misc{yue2024tdgr,
+    title={t-DGR: A Trajectory-Based Deep Generative Replay Method for Continual Learning in Decision Making}, 
+    author={William Yue and Bo Liu and Peter Stone},
+    year={2024},
+    eprint={2401.02576},
+    archivePrefix={arXiv},
+    primaryClass={cs.LG}
+}
+```
 
 # Acknowledgements
 Our diffusion model is based on Phil Wang's [denoising-diffusion-pytorch](https://github.com/lucidrains/denoising-diffusion-pytorch) repository. Our 1-D U-Net model is based on Michael Janner's [diffuser](https://github.com/jannerm/diffuser) repository.
