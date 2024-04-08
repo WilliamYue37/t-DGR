@@ -1,6 +1,7 @@
 # t-DGR
 **t-DGR: A Trajectory-Based Deep Generative Replay Method for Continual Learning in Decision Making**
 - [Read the Paper](https://arxiv.org/abs/2401.02576)
+- [Try it on Google Colab](https://colab.research.google.com/drive/1lbED6O1DlKozGLNoG5Gz7fVc7jVQhC_g?usp=sharing)
 
 ![Figure 1](images/Fig1.svg)
 ![Figure 2](images/DGR.svg)
@@ -20,6 +21,8 @@ See the `scripts/` folder for examples of how to train and evaluate methods. For
 ```shell
 ./scripts/run_t-dgr.sh
 ```
+
+Alternatively, try t-DGR by using our [Google Colab Notebook](https://colab.research.google.com/drive/1lbED6O1DlKozGLNoG5Gz7fVc7jVQhC_g?usp=sharing).
 
 # Training
 To train a model, run the following command:
