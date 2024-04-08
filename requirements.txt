@@ -1,11 +1,11 @@
 git+https://github.com/rlworkgroup/metaworld.git@84bda2c3bd32fc03bb690d6188b22c7946cdb020
 numpy==1.23.4
-gym==0.21.0
+gym==0.26.2
 mujoco-py==2.1.2.14
 matplotlib==3.6.2
 einops==0.6.0
 einops-exts==0.0.4
-tensorboard==2.11.1
+tensorboard
 pytest==7.2.2
 cython==0.29.33
 scipy==1.9.3
