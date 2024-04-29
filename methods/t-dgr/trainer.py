@@ -7,7 +7,7 @@ from pathlib import Path
 import os
 
 class Trainer():
-    def __init__(self, model, dataset, train_batch_size = 64, train_lr = 1e-4, ckpt_every = 500, ckpts_folder = './ckpts'):
+    def __init__(self, model, dataset, train_batch_size = 64, train_lr = 1e-4, ckpt_every = 500, ckpts_folder = './ckpts', num_workers = 4):
         self.model = model
 
         self.writer = SummaryWriter(log_dir=ckpts_folder + '/learner_logs')
@@ -16,8 +16,9 @@ class Trainer():
 
         self.batch_size = train_batch_size
 
+        self.num_workers = num_workers
         self.ds = dataset
-        self.dl = DataLoader(self.ds, batch_size = train_batch_size, shuffle=True, pin_memory=True)
+        self.dl = DataLoader(self.ds, batch_size = train_batch_size, shuffle=True, pin_memory=True, num_workers=num_workers)
 
         self.opt = Adam(model.parameters(), lr = train_lr)
 
@@ -45,7 +46,7 @@ class Trainer():
 
     def load_new_dataset(self, dataset):
         self.ds = dataset
-        self.dl = DataLoader(self.ds, batch_size = self.batch_size, shuffle=True, pin_memory=True)
+        self.dl = DataLoader(self.ds, batch_size = self.batch_size, shuffle=True, pin_memory=True, num_workers=self.num_workers)
 
     def train(self, num_epoch):
         self.model.train()

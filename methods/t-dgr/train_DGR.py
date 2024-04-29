@@ -1,6 +1,5 @@
 import argparse
 import math
-import threading
 import torch
 import socket
 import datetime
@@ -27,6 +26,7 @@ parser.add_argument('--ckpt_folder', type=str, default=None, help='folder to sav
 parser.add_argument('--warmup', type=int, default=50000, help='number of training steps to warmup the generator')
 parser.add_argument('--dataset', type=str, required=True, help='path to dataset of expert demonstrations')
 parser.add_argument('--benchmark', type=str, choices=['cw20', 'cw10', 'gcl'], default='cw20', help='benchmark to run')
+parser.add_argument('--num_workers', type=int, default=8, help='number of workers for data loading')
 parser.add_argument('--seed', type=int, default=0, help='random seed')
 args = parser.parse_args()
 
@@ -64,7 +64,7 @@ generator_trainer = None
 
 # load checkpoints
 if args.learner_ckpt is not None:
-    learner_trainer = LearnerTrainer(learner_model, MetaworldDataset(f'{args.dataset}/{env_names[0]}'), ckpts_folder=args.ckpt_folder, train_batch_size=args.batch_size, train_lr=args.lr) 
+    learner_trainer = LearnerTrainer(learner_model, MetaworldDataset(f'{args.dataset}/{env_names[0]}'), ckpts_folder=args.ckpt_folder, train_batch_size=args.batch_size, train_lr=args.lr, num_workers=args.num_workers) 
     learner_trainer.load(args.learner_ckpt)
 if args.gen_ckpt is not None:
     generator_trainer = DiffusionTrainer(
@@ -76,7 +76,8 @@ if args.gen_ckpt is not None:
         gradient_accumulate_every = 2,    # gradient accumulation steps
         ema_decay = 0.995,                # exponential moving average decay
         amp = True,                        # turn on mixed precision
-        results_folder = args.ckpt_folder
+        results_folder = args.ckpt_folder,
+        num_workers=args.num_workers
     )
     generator_trainer.load(args.gen_ckpt)
 
@@ -138,7 +139,7 @@ for repeat in range(repeats):
                 j += 1
             
         if learner_trainer is None or generator_trainer is None: # initialize trainers for the first time
-            learner_trainer = LearnerTrainer(learner_model, learner_dataset, ckpts_folder=args.ckpt_folder, train_batch_size=args.batch_size, train_lr=args.lr)
+            learner_trainer = LearnerTrainer(learner_model, learner_dataset, ckpts_folder=args.ckpt_folder, train_batch_size=args.batch_size, train_lr=args.lr, num_workers=args.num_workers)
             generator_trainer = DiffusionTrainer(
                 diffusion,
                 generator_dataset,
@@ -148,7 +149,8 @@ for repeat in range(repeats):
                 gradient_accumulate_every = 2,    # gradient accumulation steps
                 ema_decay = 0.995,                # exponential moving average decay
                 amp = True,                        # turn on mixed precision
-                results_folder = args.ckpt_folder
+                results_folder = args.ckpt_folder,
+                num_workers=args.num_workers
             )
         else:
             learner_trainer.load_new_dataset(learner_dataset)
@@ -156,12 +158,8 @@ for repeat in range(repeats):
 
         warmup_steps = args.warmup if env_names.index(env_name) == 0 else 0
 
-        learn_thread = threading.Thread(target=learner_trainer.train, args=(args.epochs,))
-        generator_thread = threading.Thread(target=generator_trainer.train, args=(args.steps + warmup_steps,))
-        learn_thread.start()
-        generator_thread.start()
-        learn_thread.join()
-        generator_thread.join()
+        learner_trainer.train(args.epochs)
+        generator_trainer.train(args.steps + warmup_steps)
 
         learner_trainer.save(env_name + f'-{repeat}')
 

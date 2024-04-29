@@ -242,7 +242,8 @@ class Trainer(object):
         update_ema_every = 10,
         save_every = 1000,
         results_folder = './results',
-        max_grad_norm = None
+        max_grad_norm = None,
+        num_workers = 4
     ):
         super().__init__()
         self.model = diffusion_model
@@ -258,7 +259,8 @@ class Trainer(object):
 
         self.ds = dataset
 
-        self.dl = cycle(data.DataLoader(self.ds, batch_size = train_batch_size, shuffle=True, pin_memory=True))
+        self.num_workers = num_workers
+        self.dl = cycle(data.DataLoader(self.ds, batch_size = train_batch_size, shuffle=True, pin_memory=True, num_workers=num_workers))
         self.opt = Adam(diffusion_model.parameters(), lr = train_lr)
 
         self.step = 0
@@ -312,7 +314,7 @@ class Trainer(object):
 
     def load_new_dataset(self, dataset):
         self.ds = dataset
-        self.dl = cycle(data.DataLoader(self.ds, batch_size = self.batch_size, shuffle=True, pin_memory=True))
+        self.dl = cycle(data.DataLoader(self.ds, batch_size = self.batch_size, shuffle=True, pin_memory=True, num_workers=self.num_workers))
 
     def train(self, train_num_steps = 100000):
         for _ in range(train_num_steps):
