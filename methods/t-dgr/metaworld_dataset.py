@@ -28,6 +28,30 @@ class MetaworldDataset(Dataset):
     def add_item(self, item):
         self.demos.append(item)
 
+class ImageDataset(Dataset):
+    def __init__(self, folder):
+        super().__init__()
+        exts = ['rollout']
+        paths = [p for ext in exts for p in Path(f'{folder}').glob(f'**/*.{ext}')]
+
+        self.data = []
+        for path in paths:
+            rollout = torch.load(path) 
+            # only keep the observations and throw away the actions
+            for i in range(len(rollout)):
+                rollout[i] = [torch.tensor(rollout[i][0], dtype=torch.float32), torch.tensor([i])]
+            self.data += rollout
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, index):
+        return self.data[index]
+
+    def add_item(self, item):
+        assert len(item) == 2 and item[0].shape == (49,) and item[1].shape == (1,)
+        self.data.append(item)
+
 def get_videos(rollout, vid_len):
     """parse a rollout into videos of length vid_len"""
     videos = []
