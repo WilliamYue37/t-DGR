@@ -8,4 +8,4 @@ einops-exts==0.0.4
 tensorboard
 pytest==7.2.2
 cython==0.29.33
-scipy==1.9.3
+scipy==1.11.1
