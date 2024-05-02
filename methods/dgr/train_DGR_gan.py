@@ -49,8 +49,8 @@ else:
 repeats = 2 if args.benchmark == 'cw20' else 1
 
 learner_model = MLP(input=49, output=4).cuda()
-generator_model = Generator(args.latent_dim, 10, 100, 39).cuda()
-discriminator_model = Discriminator(39, 10, 100).cuda()
+generator_model = Generator(args.latent_dim, 10, 39).cuda()
+discriminator_model = Discriminator(39, 10).cuda()
 
 learner_trainer = None
 generator_trainer = None
@@ -85,6 +85,7 @@ for repeat in range(repeats):
             prev_generator = generator_trainer.generator
 
             num_generated_samples = args.ratio * len(learner_dataset) / (1 - args.ratio)
+            batches_needed = math.ceil(num_generated_samples / args.batch_size)
             if 'cw' in args.benchmark:
                 num_of_env_so_far = env_names.index(env_name) if repeat == 0 else len(env_names)
             elif args.benchmark == 'gcl':
@@ -92,32 +93,20 @@ for repeat in range(repeats):
             else:
                 assert False
 
-            j = 0
-            while num_generated_samples > 0 or j % num_of_env_so_far != 0:
+            for j in range(max(batches_needed, num_of_env_so_far)):
                 task_id = j % num_of_env_so_far
-                sample_batch_size = maxi[task_id]
                 cond = torch.eye(len(env_names))[task_id].cuda()
-                cond = torch.broadcast_to(cond, (sample_batch_size, len(env_names)))
-                traj_time = torch.arange(sample_batch_size).cuda()
-                traj_data = prev_generator.sample(cond, traj_time)
+                cond = torch.broadcast_to(cond, (args.batch_size, len(env_names)))
+                traj_data = prev_generator.sample(cond)
                 
-                # split image_data into batches
                 with torch.no_grad():
                     target = prev_learner(traj_data).numpy(force=True)
                     data = traj_data.cpu()
 
-                    assert data.shape[0] == sample_batch_size
+                    assert data.shape[0] == args.batch_size
                     for i in range(data.shape[0]):
                         learner_dataset.add_item([data[i], target[i]])
-
-                    traj_data, traj_time = traj_data.cpu(), traj_time.cpu()
-                    assert traj_data.shape[0] == traj_time.shape[0]
-                    for i in range(traj_data.shape[0]):
-                        generator_dataset.add_item([traj_data[i], traj_time[i].unsqueeze(0)])
-
-                # update loop variables
-                num_generated_samples -= maxi[task_id]
-                j += 1
+                        generator_dataset.add_item(data[i])
             
         if learner_trainer is None or generator_trainer is None: # initialize trainers for the first time
             learner_trainer = LearnerTrainer(learner_model, learner_dataset, ckpts_folder=args.ckpt_folder, train_batch_size=args.batch_size, train_lr=args.lr, num_workers=args.num_workers)
