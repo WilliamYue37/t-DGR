@@ -134,10 +134,6 @@ for repeat in range(repeats):
             generator_trainer.load_new_dataset(generator_dataset)
 
         warmup_epochs = args.warmup if env_names.index(env_name) == 0 else 0
-        if 'cw' in args.benchmark:
-            num_of_env_so_far = env_names.index(env_name) if repeat == 0 else len(env_names)
-        elif args.benchmark == 'gcl':
-            num_of_env_so_far = min(env_names.index(env_name) + 1, len(env_names))
 
         learner_trainer.train(args.epochs)
         generator_trainer.train(args.gan_epochs + warmup_epochs)

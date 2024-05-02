@@ -9,7 +9,6 @@ from mlp import MLP
 from trainer import Trainer as LearnerTrainer
 from metaworld_dataset import MetaworldDataset, ImageDataset
 from wgan_gp import Generator, Discriminator, Trainer as GANTrainer
-from unet import TemporalUnet
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--batch_size', type=int, default=32, help='batch size for training')
@@ -26,7 +25,7 @@ parser.add_argument('--ckpt_folder', type=str, default=None, help='folder to sav
 parser.add_argument('--warmup', type=int, default=600, help='number of training epochs to warmup the generator')
 parser.add_argument('--dataset', type=str, required=True, help='path to dataset of expert demonstrations')
 parser.add_argument('--benchmark', type=str, choices=['cw20', 'cw10', 'gcl'], default='cw20', help='benchmark to run')
-parser.add_argument('--num_workers', type=int, default=8, help='number of workers for data loading')
+parser.add_argument('--num_workers', type=int, default=4, help='number of workers for data loading')
 parser.add_argument('--seed', type=int, default=0, help='random seed')
 args = parser.parse_args()
 
@@ -123,10 +122,6 @@ for repeat in range(repeats):
             generator_trainer.load_new_dataset(generator_dataset)
 
         warmup_epochs = args.warmup if env_names.index(env_name) == 0 else 0
-        if 'cw' in args.benchmark:
-            num_of_env_so_far = env_names.index(env_name) if repeat == 0 else len(env_names)
-        elif args.benchmark == 'gcl':
-            num_of_env_so_far = min(env_names.index(env_name) + 1, len(env_names))
 
         learner_trainer.train(args.epochs)
         generator_trainer.train(args.gan_epochs + warmup_epochs)
