@@ -140,7 +140,7 @@ class Trainer(object):
         """Calculates the gradient penalty loss for WGAN GP"""
         batch_size = real_samples.shape[0]
         # Random weight term for interpolation between real and fake samples
-        alpha = torch.randn(batch_size, 1).cuda()
+        alpha = torch.rand(batch_size, 1).cuda()
         # Get random interpolation between real and fake samples
         interpolates = (alpha * real_samples + ((1 - alpha) * fake_samples)).requires_grad_(True)
         d_interpolates = self.discriminator(interpolates, task_cond, traj_time)
