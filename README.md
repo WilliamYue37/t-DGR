@@ -1,5 +1,6 @@
 # t-DGR
 **t-DGR: A Trajectory-Based Deep Generative Replay Method for Continual Learning in Decision Making**
+- [Project Page](https://williamyue37.github.io/project_pages/t-dgr/)
 - [Read the Paper](https://arxiv.org/abs/2401.02576)
 - [Try it on Google Colab](https://colab.research.google.com/drive/1lbED6O1DlKozGLNoG5Gz7fVc7jVQhC_g?usp=sharing)
 
